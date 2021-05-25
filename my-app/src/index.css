@@ -1,13 +1,59 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font: 12px "Century Gothic", Futura, sans-serif;
+  margin: 20px
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* USER-INFO STYLE */
+.user-info {
+  float: right;
+}
+
+/* inputs */
+.steam-id {
+  margin: 2px;
+  padding:10px;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  border-radius:10px;
+}
+.game-count {
+  margin: 2px;
+  padding:10px;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  border-radius:10px;
+}
+.user-info-submission {
+  float: right;
+  margin: 2px;
+  padding:10px;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  border-radius:10px;
+}
+.user-info-submission:hover {
+  background-color: #6e746e;
+} 
+.user-info-submission:active {
+  background-color: #6e746e;
+  transform: translateZ(10px);
+  transform: translateY(4px);
+}
+
+/* FILTERS */
+.civ-button {
+  background: rgb(148, 147, 143);
+  padding: 2;
+  margin: 4;
+  border: 2px solid rgb(22, 21, 21);
+  text-align: center;
+  font-size: 10px;
+  width: 85px;
+}
+.civ-button:hover {
+  background-color: #6e746e;
+} 
+
+:root {
+    background: rgb(177, 144, 104);
 }

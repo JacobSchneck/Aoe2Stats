@@ -1,18 +1,25 @@
+// Jacob Schneck
+// Project Thing
+
+// Not good enough at react to type everything yet but someday
 // @ts-nocheck
 
+/********************************************** IMPORTS ****************************************************/
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
-import { resourceLimits } from 'worker_threads';
-// import {GetUserData} from './services.tsx';
 import './index.css';
 
 
+/********************************************** GLOBALS ****************************************************/
+const DEBUG = true;
+const EXAMPLE_API_URL = 'https://aoe2.net/api/player/matches?game=aoe2de&steam_id=76561198134218675&count=1';
+const CIVS = ['Aztecs', 'Berbers', 'Britons', 'Bulgarians', 'Burmese', 'Byzayntines', 'Celts',
+            'Chinese', 'Cumans', 'Ethiopians', 'Franks', 'Goths', 'Huns', 'Incas',
+            'Indians', 'Italians', 'Japanese', 'Khmer', 'Koreans', 'Lithuanians', 'Magyars',
+            'Malay', 'Malians', 'Mayans', 'Mongols', 'Persians', 'Portuguese', 'Saracens',
+            'Slavs', 'Spanish', 'Tatars', 'Teutons', 'Turks', 'Vietnamese', 'Vikings'];
+
 /********************************************** API CALLS **************************************************/
-const urlUser = 'https://aoe2.net/api/player/matches?game=aoe2de&steam_id=76561198134218675&count=1'
-
-
-// const URL_USER_DATA: string = 'https://aoe2.net/api/player/matches?game=aoe2de&steam_id=76561198134218675&count=1'
-
 class UserInfo extends React.Component {
   constructor(props) {
     super(props)
@@ -43,18 +50,13 @@ class UserInfo extends React.Component {
     });
   }
 
-  // Helper function for handle submit
-
   handleSubmit(event) {
     let apiUrl = 'https://aoe2.net/api/player/matches?game=aoe2de&steam_id=' + this.state.steamID + "&count=" + this.state.numGames;
     console.log(apiUrl)
 
-    let data = undefined;
-
     fetch(apiUrl)
         .then(response => response.json())
         .then(result => {
-            data = _parseData(result, this.state.steamID);
             this.setState({
               games: _parseData(result, this.state.steamID),
             });
@@ -89,10 +91,8 @@ class UserInfo extends React.Component {
         });
         return games;
     }
-
-    this.setState({
-      games: data,
-    })
+    
+    // debug 
     console.log(this.state.games);
 
     event.preventDefault();
@@ -100,75 +100,84 @@ class UserInfo extends React.Component {
 
   render() {
     return (
-      <div>
         <form onSubmit={this.handleSubmit}> 
           <div>
-            <label>
-              Steam ID: 
-              <input type="text" name="steam-id" value={this.state.steamID} onChange={this.handleSteamIDChange}/>
-            </label>
+              <input type="text" className="steam-id" value={this.state.steamID} onChange={this.handleSteamIDChange} placeholder="Steam ID"/>
           </div>
           <div>
-            <label>
-              Number of games: 
-              <input type="text" name="game-count" value={this.state.numGames} onChange={this.handleNumGamesChange} />
-            </label>
+              <input type="text" className="game-count" value={this.state.numGames} onChange={this.handleNumGamesChange} placeholder="Number of Games"/>
           </div>
-            <input type="submit" value="Submit"/>
+            <input type="submit" className="user-info-submission" value="Submit"/>
         </form>
-      </div>
     )
   }
 }
 
 /********************************************** FILTERS **************************************************/
+class CivFilters extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-// const CIVS = ['Aztecs', 'Berbers', 'Britons', 'Bulgarians', 'Burmese', 'Byzayntines', 'Celts',
-//         'Chinese', 'Cumans', 'Ethiopians', 'Franks', 'Goths',' Huns', 'Incas',
-//         'Indians', 'Italians', 'Japanese', 'Khmer', 'Koreans', 'Lithuanians', 'Magyars',
-//         'Malay', 'Malians', 'Mayans', 'Mongols', 'Persians', 'Portuguese', 'Saracens',
-//         'Slavs', 'Spanish', 'Tatars', 'Teutons', 'Turks', 'Vietnamese', 'Vikings'];
+  RenderCivButtons() {
+    return CIVS.map((civ, index) => {
+      return (
+        <div>
+          <button className="civ-button"> {civ} </button>
+        </div>
+      ) 
+    });
+  }
 
-// function hello() {
-//   return (
-//     <div>
-//       <p> Hello World!</p>
-//     </div>
-//   );
-// }
+  render() {
+    return (
+      <form className="civ-container">
+        <b4>
+          CIVALIZATIONS
+        </b4>
+        <div>
+          {this.RenderCivButtons()}
+        </div>
+      </form>
+    );
+  }
+}
 
-// class CivFilters extends React.Component {
 
-//   render() {
-//     return (
-//       // <p> Civ Buttons go here</p>
-//       <div>
-//         <input type="checkbox" value="Male" name="gender"/>Male
-//         <input type="checkbox" value="Male" name="gender"/>Female
-//       </div>
-//       );
-//   }
-// }
+class Filters extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-// class Filters extends React.Component {
-//   constructor(props: any) {
-//     super(props)
-//   }
+  render() {
+    return (
+        <CivFilters/>
+    );
+  }
+}
+/********************************************** ROOT *****************************************************/
+class Root extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-//   render() {
-//     return (
-//       <div className="filters">
-//         <div className = "civ-filters">
-//           <CivFilters/>
-//         </div>
-//       </div>
-//     );
-//   }
-// }
+  render() {
+    return (
+      <>
+      <div className="user-info"> 
+        <UserInfo />
+      </div>
+      <div className="filters"> 
+        <Filters />
+      </div>
+      </>
+    )
+  }
+}
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<UserInfo />, rootElement);
-// ReactDOM.render(<GetUserData/>, rootElement);
-// ReactDOM.render(<GithubCommit />, rootElement);
+// ReactDOM.render(<CivFilters />, rootElement);
+ReactDOM.render(<Root />, rootElement);
+// ReactDOM.render(<UserInfo/>, rootElement);
 
 
