@@ -24,7 +24,8 @@ body {
   border-radius:10px;
 }
 .user-info-submission {
-  float: right;
+  /* float: right; */
+  width: 100%;
   margin: 2px;
   padding:10px;
   border:0;
@@ -41,7 +42,25 @@ body {
 }
 
 /* FILTERS */
-.civ-button {
+.civ-button-off {
+  background: rgb(223, 221, 215);
+  padding: 2;
+  margin: 4;
+  border: 2px solid rgb(22, 21, 21);
+  text-align: center;
+  font-size: 10px;
+  width: 85px;
+}
+.civ-button-off:hover {
+  background-color: #6e746e;
+} 
+.civ-button-off:active {
+  background-color: #6e746e;
+  transform: translateZ(10px);
+  transform: translateX(2px);
+}
+
+.civ-button-on {
   background: rgb(148, 147, 143);
   padding: 2;
   margin: 4;
@@ -50,9 +69,33 @@ body {
   font-size: 10px;
   width: 85px;
 }
-.civ-button:hover {
+.civ-button-on:hover {
   background-color: #6e746e;
 } 
+.civ-button-on:active {
+  background: rgb(148, 147, 143);
+  transform: translateZ(10px);
+  transform: translateX(2px);
+}
+
+/* GRAPH */
+/* width: 100% is a perfectly valid centering method*/
+.graph-button {
+  width: 100%; 
+  margin: 2px;
+  padding:10px;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  border-radius:10px;
+}
+.graph-button:hover {
+  background-color: #6e746e;
+} 
+.graph-button:active {
+  background-color: #6e746e;
+  transform: translateZ(10px);
+  transform: translateY(4px);
+}
 
 :root {
     background: rgb(177, 144, 104);
