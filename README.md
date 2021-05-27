@@ -9,7 +9,7 @@ Enter in your steam_id, number of games and than click submit. Add civs that int
 
 ## Example Images
 
-![Alt text](Example_Image_TWO.PNG?raw=true)
+![plot](Example_Image_TWO.PNG?raw=true)
 ![Alt text](Example_Image_ONE.PNG?raw=true)
 
 ## Future
