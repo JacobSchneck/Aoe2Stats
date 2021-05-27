@@ -192,8 +192,8 @@ function MakeChart(props) {
     labels: props.yData,
     datasets: [{
       label: props.playerName + "'s Match Data",
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
+      backgroundColor: 'rgba(0,0,0,0.1)',
+      borderColor: 'rgba(0,0,0,1)',
       borderWidth: 1,
       hoverBackgroundColor: 'rgba(255,99,132,0.4)',
       hoverBorderColor: 'rgba(255,99,132,1)',
@@ -208,7 +208,7 @@ function MakeChart(props) {
         <Bar
           data={data}
           width={500}
-          height={500}
+          height={350}
           // options={{
           //   maintainAspectRatio: false
           // }}
