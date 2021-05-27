@@ -9,6 +9,7 @@ import React from 'react';
 // import {createContex, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {Bar} from 'react-chartjs-2';
+import {useHistory} from "react-router-dom";
 import { PropTypes } from 'react'
 import './index.css';
 
@@ -33,6 +34,7 @@ class UserInfo extends React.Component {
       steamID: '',
       numGames: '',
       games: [],
+      playerName: '',
     };
   
     // bind 'this' pointer to functions
@@ -71,8 +73,10 @@ class UserInfo extends React.Component {
     fetch(apiUrl)
         .then(response => response.json())
         .then(result => {
+            let tempResult = _parseData(result, this.state.steamID);
             this.setState({
-              games: _parseData(result, this.state.steamID),
+              games: tempResult.games,
+              playerName: tempResult.playerName,
             });
         })
         .catch(error => {
@@ -81,6 +85,13 @@ class UserInfo extends React.Component {
         });
 
     function _parseData(result, steamID) {
+        const playerName = result[0].players.filter(p => p.steam_id === steamID)[0].name;
+        if (DEBUG) {
+          console.log(playerName);
+        }
+        // this.setState({
+        //   playerName: playerName,
+        // });
         let civ = -1;
         let map = -1;
         let won = false;
@@ -92,7 +103,6 @@ class UserInfo extends React.Component {
                 if (game.players[i].steam_id === steamID) {
                     civ = game.players[i].civ;
                     won = game.players[i].won;
-
                     break;
                 }
             }
@@ -103,7 +113,7 @@ class UserInfo extends React.Component {
                 won: won,
             });
         });
-        return games;
+        return {games: games, playerName: playerName};
     }
     
     if (DEBUG) {
@@ -117,20 +127,14 @@ class UserInfo extends React.Component {
 
   render() {
     return (
-      <>
+      <div>
         <form onSubmit={this.handleSubmit}> 
-          <div>
-            <input type="text" className="steam-id" value={this.state.steamID} onChange={this.handleSteamIDChange} placeholder="Steam ID"/>
-          </div>
-          <div>
-            <input type="text" className="game-count" value={this.state.numGames} onChange={this.handleNumGamesChange} placeholder="Number of Games"/>
-          </div>
-          <div>
             <input type="submit" className="user-info-submission" value="Submit"/>
-          </div>
+            <input type="text" className="game-count" value={this.state.numGames} onChange={this.handleNumGamesChange} placeholder="Number of Games"/>
+            <input type="text" className="steam-id" value={this.state.steamID} onChange={this.handleSteamIDChange} placeholder="Steam ID"/>
         </form>
-      <Graph games={this.state.games} civsInFilter={this.props.civsInFilter}/>
-      </>
+          <Graph playerName = {this.state.playerName} games={this.state.games} civsInFilter={this.props.civsInFilter}/>
+      </div>
     )
   }
 }
@@ -183,23 +187,56 @@ class Filters extends React.Component {
 }
 
 /********************************************** GRAPHING *************************************************/
+function MakeChart(props) {
+  const data = {
+    labels: props.yData,
+    datasets: [{
+      label: props.playerName + "'s Match Data",
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: props.xData,
+    }],
+  };
+
+  return (
+    <>
+        {/* <h2>Bar Example (custom size)</h2> */}
+      <div className="stats-chart">
+        <Bar
+          data={data}
+          width={500}
+          height={500}
+          // options={{
+          //   maintainAspectRatio: false
+          // }}
+        />
+      </div>
+    </>
+  );
+}
+
 class Graph extends React.Component {
   constructor() {
     super();
+    this.state = {
+      yData: [],
+      xData: [],
+      makeChart: false,
+    }
     this.handleGraphButton = this.handleGraphButton.bind(this);
-
   }
 
-
-  //----------------- Event Handling ----------------------//
-  handleGraphButton(event) {
+  parseGameDataToGraph = () => {
     if (DEBUG) {
       console.log("Games: ", this.props.games);
       console.log("Civs to Filter: ", this.props.civsInFilter);
     }
 
     // Apply Filter Criteria to games
-    const gamesToGraph = this.props.games.filter(g => !this.props.civsInFilter.includes(g.civ));
+    const gamesToGraph = this.props.games.filter(g => this.props.civsInFilter.includes(g.civ));
 
     // Good moment for Typescript graphData takes form of 
     /* 
@@ -248,17 +285,37 @@ class Graph extends React.Component {
       console.log(totalGames);
     }
 
+    this.setState({
+      yData: graphData.map(g => g.civName),
+      xData: graphData.map(g => g.gamesWon/g.totalGames),
+    });
+
+  }
+
+  //----------------- Event Handling ----------------------//
+  handleGraphButton(event) {
+    this.parseGameDataToGraph();
+    console.log("HI");
+    this.setState({
+      makeChart: true,
+    });
     event.preventDefault();
   }
 
   //----------------- Render ------------------------------//
   renderGraphButton() {
     return (
-      <button className="graph-button" onClick={(event) => this.handleGraphButton(event)}>
-        GRAPH ME!
-      </button>
-    )
-    
+      <>
+      <div>
+        <button className="graph-button" onClick={(event) => this.handleGraphButton(event)}>
+          GRAPH ME!
+        </button>
+      </div>
+      <div> 
+        {this.state.makeChart ? <MakeChart playerName={this.props.playerName} xData={this.state.xData} yData={this.state.yData}/> : null}
+      </div>
+      </>
+    );
   }
 
   render() {
@@ -300,11 +357,11 @@ class App extends React.Component {
       civsInFilter: tempCivs,
       isCivIn: tempCheck,
     });
-    event.preventDefault();
-
     if (DEBUG) {
       console.log(this.state.civsInFilter);
     }
+
+    event.preventDefault();
   }
   //----------------- Render ------------------------------//
   render() {
